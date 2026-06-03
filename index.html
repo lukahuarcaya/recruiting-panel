@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Reclutamiento · TYCH BIM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.3.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a3a8f;--navy-dark:#122970;--navy-light:#e8edf7;
+  --cyan:#29aae1;--cyan-dark:#1a7fab;--cyan-light:#e6f6fc;
+  --bg:#f4f5f7;--surface:#ffffff;--surface2:#f8f9fb;
+  --border:#e2e4e9;--border2:#d0d3db;
+  --text:#1a1d23;--text2:#5a6072;--text3:#9399a8;
+  --green:#1D9E75;--green-bg:#eaf3de;--green-text:#3B6D11;
+  --red:#E24B4A;--red-bg:#fcebeb;--red-text:#A32D2D;
+  --amber:#BA7517;--amber-bg:#faeeda;
+  --blue-bg:#e6f1fb;--blue-text:#185FA5;
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 12px rgba(0,0,0,.1);
+}
+html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#000;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar img{height:30px;object-fit:contain}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-label{color:rgba(255,255,255,.4);font-size:12px}
+.top-badge{background:var(--cyan);color:#fff;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px}
+.main{display:flex;flex:1}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
+.sidebar-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;padding:10px 20px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 20px;cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;margin:1px 8px;border-radius:var(--radius)}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--navy-light);color:var(--navy);font-weight:500}
+.nav-item i{font-size:16px}
+.content{flex:1;overflow-y:auto;padding:24px 28px;max-width:1200px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;border-top:3px solid transparent;box-shadow:var(--shadow)}
+.stat-card.s1{border-top-color:var(--navy)}.stat-card.s2{border-top-color:var(--cyan)}
+.stat-card.s3{border-top-color:var(--green)}.stat-card.s4{border-top-color:var(--red)}
+.stat-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.stat-value{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--text)}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.toolbar select,.toolbar input[type=text]{font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none}
+.toolbar input[type=text]{width:180px}
+.btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
+.btn:hover{background:var(--surface2)}
+.btn.navy{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.navy:hover{background:var(--navy-dark)}
+.btn.cyan{background:var(--cyan);color:#fff;border-color:var(--cyan)}.btn.cyan:hover{background:var(--cyan-dark)}
+.btn.sm{padding:4px 10px;font-size:11px}
+.btn.danger{border-color:var(--red);color:var(--red)}.btn.danger:hover{background:var(--red-bg)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+.ctable{width:100%;border-collapse:collapse}
+.ctable th{text-align:left;padding:9px 14px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px;background:var(--surface2);white-space:nowrap}
+.ctable td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.ctable tr:last-child td{border-bottom:none}
+.ctable tbody tr{cursor:pointer;transition:background .1s}
+.ctable tbody tr:hover td{background:#f0f4ff}
+.ctable tbody tr.sel td{background:var(--navy-light)}
+.cname{font-weight:500;font-size:13px}
+.cpuesto{font-size:11px;color:var(--text2)}
+.score-wrap{display:flex;align-items:center;gap:7px}
+.score-track{width:56px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0}
+.score-fill{height:100%;border-radius:3px}
+.score-val{font-size:11px;font-weight:700;min-width:30px}
+.pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pill.activo{background:var(--cyan-light);color:var(--cyan-dark)}
+.pill.descartado{background:var(--red-bg);color:var(--red-text)}
+.pill.entrevista{background:var(--blue-bg);color:var(--blue-text)}
+.pill.psico{background:var(--amber-bg);color:var(--amber)}
+.pill.terna{background:var(--navy-light);color:var(--navy)}
+.pill.aprobado{background:var(--green-bg);color:var(--green-text)}
+.pill.tych{background:#000;color:var(--cyan);font-size:9px;padding:1px 6px}
+.detail{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:18px;display:none}
+.detail.open{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.dsec-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.skill-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px}
+.nv-a{color:var(--green);font-weight:600}.nv-i{color:var(--cyan-dark);font-weight:600}
+.nv-b{color:var(--amber);font-weight:600}.nv-n{color:var(--red);font-weight:600}
+.discard-box{background:var(--red-bg);border-left:3px solid var(--red);border-radius:0 var(--radius) var(--radius) 0;padding:8px 12px;font-size:11px;color:var(--red-text);margin-top:10px;line-height:1.6}
+.act-col{display:flex;gap:3px}
+.puestos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.puesto-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s}
+.puesto-card:hover{border-color:var(--cyan)}
+.puesto-card h3{font-size:13px;font-weight:600;margin-bottom:4px}
+.puesto-card .pm{font-size:11px;color:var(--text2)}
+.puesto-card .pc{font-size:11px;color:var(--navy);font-weight:600;margin-top:5px}
+.np-form{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius-lg);padding:18px;display:none;box-shadow:var(--shadow);margin-bottom:12px}
+.np-form h3{font-size:14px;font-weight:600;margin-bottom:14px}
+.frow{margin-bottom:10px}
+.frow label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px}
+.frow input,.frow select{width:100%;font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none;font-family:'Barlow',sans-serif}
+.skrow{display:flex;gap:6px;align-items:center;margin-bottom:5px}
+.skrow input{flex:1;padding:5px 8px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none;font-family:'Barlow',sans-serif}
+.skrow select{width:110px;font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none}
+.skrow .pw{width:44px;padding:5px 6px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none}
+.rm-btn{color:var(--red);cursor:pointer;font-size:18px;line-height:1;padding:0 3px}
+.pdet{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;display:none;margin-top:10px}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:.3px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+.flujo-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.fnum{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.fnum.auto{background:var(--navy);color:#fff}.fnum.manual{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.fcard{flex:1;padding:10px 14px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);border-left:3px solid transparent;box-shadow:var(--shadow)}
+.fcard.auto{border-left-color:var(--navy)}.fcard.manual{border-left-color:var(--border2)}
+.fcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.fcard-title{font-size:13px;font-weight:500}
+.auto-badge{font-size:9px;padding:2px 8px;border-radius:20px;background:var(--navy-light);color:var(--navy);font-weight:600}
+.manual-badge{font-size:9px;padding:2px 8px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);font-weight:600}
+.fcard-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.pa-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
+.pa-header{background:var(--navy);color:#fff;padding:10px 16px;font-size:13px;font-weight:600}
+.pa-trigger{padding:10px 16px;background:var(--navy-light);font-size:11px;color:var(--text2);border-bottom:1px solid var(--border)}
+.pa-body{padding:12px 16px}
+.pa-step{display:flex;gap:8px;margin-bottom:7px;font-size:12px;align-items:flex-start}
+.pa-num{min-width:20px;height:20px;border-radius:50%;background:var(--navy-light);color:var(--navy);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pa-notice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.pan{padding:12px 14px;border-radius:var(--radius);border-left:3px solid transparent}
+.pan.navy{background:var(--navy-light);border-left-color:var(--navy)}
+.pan.green{background:var(--green-bg);border-left-color:var(--green)}
+.pan-title{font-weight:600;font-size:12px;margin-bottom:3px}
+.pan.navy .pan-title{color:var(--navy)}.pan.green .pan-title{color:var(--green-text)}
+.pan-desc{font-size:11px;color:var(--text2)}
+.disc-opts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.disc-opt{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:var(--surface2);color:var(--text2);transition:all .15s}
+.disc-opt.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ie-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.ie-field label{font-size:10px;color:var(--text2);display:block;margin-bottom:2px}
+.ie-field input{width:100%;padding:4px 7px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);outline:none;font-family:'Barlow',sans-serif}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius-xl);padding:22px;width:480px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-md);border:1px solid var(--border)}
+.modal h2{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <img src="https://i.postimg.cc/qgY8y11q/logo-hori-2.png" alt="TYCH BIM" onerror="this.style.display='none';document.getElementById('fb').style.display='block'">
+  <span id="fb" style="display:none;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px">TYCH BIM</span>
+  <div class="topbar-right">
+    <span class="topbar-label">Sistema de Reclutamiento</span>
+    <span class="top-badge" id="top-badge">37 candidatos</span>
+  </div>
+</div>
+<div class="main">
+<nav class="sidebar">
+  <div class="sidebar-label">Principal</div>
+  <div class="nav-item active" onclick="showTab('candidatos',this)"><i class="ti ti-users"></i> Candidatos</div>
+  <div class="nav-item" onclick="showTab('puestos',this)"><i class="ti ti-briefcase"></i> Puestos</div>
+  <div class="nav-item" onclick="showTab('psico',this)"><i class="ti ti-brain"></i> Psicológico</div>
+  <div class="sidebar-label" style="margin-top:8px">Sistema</div>
+  <div class="nav-item" onclick="showTab('flujo',this)"><i class="ti ti-git-branch"></i> Flujo del proceso</div>
+  <div class="nav-item" onclick="showTab('automate',this)"><i class="ti ti-bolt"></i> Power Automate</div>
+</nav>
+<div class="content">
+
+<div id="tab-candidatos">
+  <div class="section-title">Candidatos</div>
+  <div class="section-sub">Ordenados por score técnico. Clic en un candidato para ver su perfil completo.</div>
+  <div class="stats-row" id="stats-row"></div>
+  <div class="toolbar">
+    <select id="fp" onchange="renderTable()"><option value="">Todos los puestos</option></select>
+    <select id="fe" onchange="renderTable()">
+      <option value="">Todos los estados</option>
+      <option value="activo">Activos</option>
+      <option value="entrevista">En entrevista</option>
+      <option value="psico">Psicológico</option>
+      <option value="terna">En terna</option>
+      <option value="aprobado">Aprobado</option>
+      <option value="descartado">Descartado</option>
+    </select>
+    <input type="text" id="srch" placeholder="Buscar candidato..." oninput="renderTable()">
+    <button class="btn navy sm" onclick="exportTerna()"><i class="ti ti-download"></i> Exportar terna</button>
+  </div>
+  <div class="card">
+    <table class="ctable">
+      <thead><tr><th>Candidato</th><th>Puesto</th><th>Score</th><th>Pretensión</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="detail" id="detail-panel"></div>
+</div>
+
+<div id="tab-puestos" style="display:none">
+  <div class="section-title">Puestos</div>
+  <div class="section-sub">Gestiona los puestos activos y crea nuevos. Cada puesto hereda el flujo completo automáticamente.</div>
+  <div class="toolbar">
+    <button class="btn cyan" onclick="showNP()"><i class="ti ti-plus"></i> Nuevo puesto</button>
+  </div>
+  <div class="puestos-grid" id="pgrid"></div>
+  <div class="np-form" id="np-form">
+    <h3><i class="ti ti-briefcase" style="margin-right:6px"></i>Configurar nuevo puesto</h3>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
+      <div class="frow"><label>Nombre del puesto</label><input type="text" id="np-n" placeholder="Ej: Modelador BIM TEKLA"></div>
+      <div class="frow"><label>Modalidad</label><select id="np-m"><option>Remoto</option><option>Presencial</option><option>Híbrido</option></select></div>
+      <div class="frow"><label>Tipo</label><select id="np-t"><option>Practicante</option><option>Junior</option><option>Semi-Senior</option><option>Senior</option></select></div>
+    </div>
+    <div class="frow">
+      <label>Habilidades técnicas &nbsp;<span style="color:var(--cyan);cursor:pointer;font-weight:400;text-transform:none;font-size:11px;letter-spacing:0" onclick="addSK()">+ agregar fila</span> &nbsp;<span style="color:var(--text3);font-weight:400;text-transform:none;font-size:10px;letter-spacing:0">nombre · nivel mínimo · peso 1–5</span></label>
+      <div id="sk-cfg"></div>
+    </div>
+    <div class="frow" style="display:flex;align-items:center;gap:12px">
+      <label style="margin-bottom:0">Score mínimo (%)</label>
+      <input type="number" id="np-u" value="60" min="0" max="100" style="width:80px">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn navy" onclick="savePuesto()"><i class="ti ti-check"></i> Guardar puesto</button>
+      <button class="btn" onclick="cancelNP()">Cancelar</button>
+    </div>
+  </div>
+  <div class="pdet" id="pdet"></div>
+</div>
+
+<div id="tab-psico" style="display:none">
+  <div class="section-title">Evaluación psicológica</div>
+  <div class="section-sub">Solo candidatos aprobados en entrevista. Registra los resultados enviados por el psicólogo.</div>
+  <div class="card">
+    <table class="ctable">
+      <thead><tr><th>Candidato</th><th>Puesto</th><th>Estado</th><th>IQ</th><th>DISC</th><th>IE prom.</th><th>Acción</th></tr></thead>
+      <tbody id="psico-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tab-flujo" style="display:none">
+  <div class="section-title">Flujo del proceso</div>
+  <div class="section-sub">Aplica a todos los puestos sin excepción. Los pasos <span style="background:var(--navy-light);color:var(--navy);padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600">automático</span> no requieren intervención tuya.</div>
+  <div id="flujo-wrap"></div>
+</div>
+
+<div id="tab-automate" style="display:none">
+  <div class="section-title">Power Automate</div>
+  <div class="section-sub">Configuración de los 3 flujos de automatización para el proceso de reclutamiento.</div>
+  <div class="pa-notice">
+    <div class="pan navy"><div class="pan-title">URL Microsoft Forms actualizada</div><div class="pan-desc">Usar <code style="background:var(--surface);padding:1px 5px;border-radius:4px;font-size:10px">forms.cloud.microsoft</code> para formularios nuevos. Los existentes redirigen automáticamente.</div></div>
+    <div class="pan green"><div class="pan-title">Conector Forms en Power Automate</div><div class="pan-desc">Usa ID interno del formulario — inmune al cambio de dominio. Flujos existentes protegidos.</div></div>
+  </div>
+  <div id="pa-steps"></div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal-psico">
+  <div class="modal">
+    <h2><i class="ti ti-brain" style="color:var(--navy)"></i>Registrar evaluación psicológica</h2>
+    <input type="hidden" id="pc-id">
+    <div class="frow"><label>Puntaje de inteligencia (0–100)</label><input type="number" id="p-iq" min="0" max="100" placeholder="Ej: 57" style="width:120px"></div>
+    <div class="frow"><label>Patrón DISC</label>
+      <div class="disc-opts">
+        <span class="disc-opt" onclick="selDisc(this)">Perfeccionista</span><span class="disc-opt" onclick="selDisc(this)">Especialista</span>
+        <span class="disc-opt" onclick="selDisc(this)">Investigador</span><span class="disc-opt" onclick="selDisc(this)">Realizador</span>
+        <span class="disc-opt" onclick="selDisc(this)">Agente</span><span class="disc-opt" onclick="selDisc(this)">Promotor</span>
+        <span class="disc-opt" onclick="selDisc(this)">Inspirador</span><span class="disc-opt" onclick="selDisc(this)">Consejero</span>
+      </div>
+    </div>
+    <div class="frow"><label>Indicadores IE (1–5 cada uno)</label><div class="ie-grid" id="ie-grid"></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn navy" onclick="savePsico()"><i class="ti ti-check"></i> Guardar</button>
+      <button class="btn" onclick="closeMod()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const NV={avanzado:3,intermedio:2,'básico':1,basico:1};
+const IE_CAMPOS=['Extravertida','Dinámica y activa','Dominante y asertiva','Cooperadora y afectiva','Altruista comprensiva','Cordial y cortés','Responsable y diligente','Meticulosa y precisa','Perseverante y tenaz','Equilibrada y paciente','Dominio emociones','Dominio impulsos','Creatividad','Apertura cultural','Apertura a lo nuevo'];
+let selCand=null;
+let puestos=[
+  {id:'coord',nombre:'Coordinador BIM Junior en Campo',modalidad:'Presencial',tipo:'Junior',umbral:65,skills:[{n:'ACC',p:2,m:'intermedio'},{n:'Revit Arquitectura',p:3,m:'avanzado'},{n:'Revit Estructuras',p:3,m:'avanzado'},{n:'Revit MEP',p:2,m:'intermedio'},{n:'Navisworks',p:3,m:'intermedio'},{n:'Microsoft Office',p:1,m:'intermedio'},{n:'AutoCAD',p:2,m:'avanzado'}]},
+  {id:'arq',nombre:'Practicante BIM de Arquitectura',modalidad:'Remoto',tipo:'Practicante',umbral:55,skills:[{n:'AutoCAD',p:2,m:'intermedio'},{n:'Revit Arquitectura',p:3,m:'avanzado'},{n:'Revit Estructuras',p:2,m:'intermedio'},{n:'Revit MEP',p:1,m:'básico'},{n:'Navisworks',p:2,m:'básico'},{n:'Microsoft Office',p:1,m:'intermedio'},{n:'Renderizado 3D',p:2,m:'intermedio'}]},
+  {id:'ing',nombre:'Practicante BIM de Ingeniería',modalidad:'Remoto',tipo:'Practicante',umbral:55,skills:[{n:'AutoCAD',p:2,m:'intermedio'},{n:'Revit Arquitectura',p:2,m:'intermedio'},{n:'Revit Estructuras',p:3,m:'avanzado'},{n:'Revit MEP',p:2,m:'intermedio'},{n:'Navisworks',p:3,m:'intermedio'},{n:'Microsoft Office',p:1,m:'intermedio'},{n:'Power BI + Revit',p:2,m:'básico'},{n:'LOD 400/450',p:3,m:'básico'},{n:'Lean Construction',p:2,m:'básico'},{n:'CDE/ECD',p:2,m:'básico'},{n:'RFI Navisworks',p:3,m:'básico'}]}
+];
+let candidatos=[];
+function mk(d,pid,i){return{id:pid+'_'+i,puestoId:pid,estado:'activo',psico:null,...d};}
+function initC(){
+  const C=[
+    {nombre:'Joel Huamanzana Hilarion',correo:'huamanzanajoel@gmail.com',wa:'925864919',pretension:'S/ 2500–3000',tych:false,perfil:'Visión estratégica BIM, coordinación de especialidades.',skills:{ACC:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'avanzado',AutoCAD:'avanzado'}},
+    {nombre:'Carlos Porras Maraví',correo:'carlosporrasmaravi@gmail.com',wa:'948518996',pretension:'S/ 2500–3000',tych:false,perfil:'Detallista, trabajo en grupo.',skills:{ACC:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'intermedio',AutoCAD:'avanzado'}},
+    {nombre:'Eric Espinoza Chanamé',correo:'eric@gmail.com',wa:'999111222',pretension:'S/ 3000',tych:false,perfil:'Modelado multidisciplinar.',skills:{ACC:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'básico','Microsoft Office':'avanzado',AutoCAD:'avanzado'}},
+    {nombre:'Daniel Tafur Cerna',correo:'daniel@gmail.com',wa:'999333444',pretension:'S/ 3000',tych:false,perfil:'Perfil completo. Experiencia en coordinación en obra.',skills:{ACC:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'avanzado','Microsoft Office':'avanzado',AutoCAD:'avanzado'}},
+    {nombre:'Oshin Guillermo Roman',correo:'oshin@gmail.com',wa:'999555666',pretension:'S/ 3000',tych:false,perfil:'Fortaleza en modelado arquitectónico y MEP.',skills:{ACC:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'intermedio','Microsoft Office':'avanzado',AutoCAD:'avanzado'}},
+  ];
+  const A=[
+    {nombre:'Renzo Cóndor Pérez',correo:'r.condor@gmail.com',wa:'',pretension:'S/ 2000',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'básico','Microsoft Office':'avanzado','Renderizado 3D':'avanzado'}},
+    {nombre:'Alixson Poves Vasquez',correo:'a.poves@gmail.com',wa:'',pretension:'S/ 2200',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'intermedio','Renderizado 3D':'intermedio'}},
+    {nombre:'Ana Chu Del Barco',correo:'a.chu@gmail.com',wa:'',pretension:'S/ 2000',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'intermedio','Renderizado 3D':'intermedio'}},
+    {nombre:'Stefannia Montenegro',correo:'s.montenegro@gmail.com',wa:'',pretension:'S/ 2000',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'avanzado','Microsoft Office':'avanzado','Renderizado 3D':'avanzado'}},
+    {nombre:'José Ramírez Zapata',correo:'j.ramirez@gmail.com',wa:'',pretension:'S/ 2500',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'intermedio','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'avanzado','Renderizado 3D':'avanzado'}},
+    {nombre:'Candidato ARQ 06',correo:'arq06@gmail.com',wa:'',pretension:'S/ 1800',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'básico','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'intermedio','Renderizado 3D':'básico'}},
+    {nombre:'Candidato ARQ 07',correo:'arq07@gmail.com',wa:'',pretension:'S/ 2000',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'básico','Microsoft Office':'avanzado','Renderizado 3D':'intermedio'}},
+    {nombre:'Candidato ARQ 08',correo:'arq08@gmail.com',wa:'',pretension:'S/ 2000',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'intermedio','Microsoft Office':'avanzado','Renderizado 3D':'avanzado'}},
+    {nombre:'Candidato ARQ 09',correo:'arq09@gmail.com',wa:'',pretension:'S/ 1300',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'intermedio','Revit Estructuras':'básico','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'básico','Renderizado 3D':'básico'}},
+    {nombre:'Candidato ARQ 10',correo:'arq10@gmail.com',wa:'',pretension:'S/ 1750',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'intermedio','Revit MEP':'básico',Navisworks:'intermedio','Microsoft Office':'intermedio','Renderizado 3D':'intermedio'}},
+  ];
+  const I=[
+    {nombre:'John Vasquez Castillo',correo:'j.vasquez@gmail.com',wa:'',pretension:'S/ 1800',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'intermedio','Revit Estructuras':'intermedio','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'intermedio','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+    {nombre:'Italo García Castañeda',correo:'i.garcia@gmail.com',wa:'',pretension:'S/ 1500',tych:true,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'intermedio','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'avanzado','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+    {nombre:'Moisés Diaz Abriojo',correo:'m.diaz@gmail.com',wa:'',pretension:'S/ 1200',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'intermedio','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'básico','Microsoft Office':'intermedio','Power BI + Revit':'básico','LOD 400/450':'intermedio','Lean Construction':'avanzado','CDE/ECD':'intermedio','RFI Navisworks':'intermedio'}},
+    {nombre:'Fernando Fernandez',correo:'f.fernandez@gmail.com',wa:'',pretension:'S/ 1400',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'avanzado','Microsoft Office':'avanzado','Power BI + Revit':'avanzado','LOD 400/450':'avanzado','Lean Construction':'avanzado','CDE/ECD':'avanzado','RFI Navisworks':'avanzado'}},
+    {nombre:'Diego Lopez Vilca',correo:'d.lopez@gmail.com',wa:'',pretension:'S/ 1200',tych:false,perfil:'',skills:{AutoCAD:'básico','Revit Arquitectura':'básico','Revit Estructuras':'básico','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'básico','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+    {nombre:'Candidato ING 06',correo:'ing06@gmail.com',wa:'',pretension:'S/ 1600',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'intermedio','Power BI + Revit':'básico','LOD 400/450':'intermedio','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'intermedio'}},
+    {nombre:'Candidato ING 07',correo:'ing07@gmail.com',wa:'',pretension:'S/ 1500',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'avanzado',Navisworks:'avanzado','Microsoft Office':'avanzado','Power BI + Revit':'intermedio','LOD 400/450':'intermedio','Lean Construction':'intermedio','CDE/ECD':'intermedio','RFI Navisworks':'avanzado'}},
+    {nombre:'Candidato ING 08',correo:'ing08@gmail.com',wa:'',pretension:'S/ 1500',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'básico','Revit Estructuras':'avanzado','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'básico','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+    {nombre:'Candidato ING 09',correo:'ing09@gmail.com',wa:'',pretension:'S/ 1500',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'intermedio','Revit Estructuras':'intermedio','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'avanzado','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+    {nombre:'Candidato ING 10',correo:'ing10@gmail.com',wa:'',pretension:'S/ 1500',tych:true,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'intermedio','Revit Estructuras':'intermedio','Revit MEP':'intermedio',Navisworks:'intermedio','Microsoft Office':'intermedio','Power BI + Revit':'básico','LOD 400/450':'intermedio','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'intermedio'}},
+    {nombre:'Candidato ING 11',correo:'ing11@gmail.com',wa:'',pretension:'S/ 1800',tych:false,perfil:'',skills:{AutoCAD:'avanzado','Revit Arquitectura':'avanzado','Revit Estructuras':'avanzado','Revit MEP':'intermedio',Navisworks:'avanzado','Microsoft Office':'avanzado','Power BI + Revit':'intermedio','LOD 400/450':'avanzado','Lean Construction':'intermedio','CDE/ECD':'intermedio','RFI Navisworks':'avanzado'}},
+    {nombre:'Candidato ING 12',correo:'ing12@gmail.com',wa:'',pretension:'S/ 1500',tych:false,perfil:'',skills:{AutoCAD:'intermedio','Revit Arquitectura':'básico','Revit Estructuras':'intermedio','Revit MEP':'básico',Navisworks:'básico','Microsoft Office':'intermedio','Power BI + Revit':'básico','LOD 400/450':'básico','Lean Construction':'básico','CDE/ECD':'básico','RFI Navisworks':'básico'}},
+  ];
+  candidatos=[...C.map((c,i)=>mk(c,'coord',i)),...A.map((c,i)=>mk(c,'arq',i)),...I.map((c,i)=>mk(c,'ing',i))];
+}
+function score(c){
+  const p=puestos.find(x=>x.id===c.puestoId);if(!p)return{pct:0,razones:[]};
+  let tot=0,obt=0,raz=[];
+  p.skills.forEach(s=>{const nv=(c.skills[s.n]||'').toLowerCase();const pts=(NV[nv]||0)*s.p;tot+=3*s.p;obt+=pts;if(pts<(NV[s.m]||1)*s.p)raz.push(`${s.n}: ${nv||'sin dato'} (mín: ${s.m})`);});
+  return{pct:tot>0?Math.round(obt/tot*100):0,razones:raz};
+}
+function sc(p){return p>=75?'#1D9E75':p>=55?'#29aae1':'#E24B4A';}
+function renderStats(){
+  const tot=candidatos.length,act=candidatos.filter(c=>c.estado!=='descartado').length,desc=candidatos.filter(c=>c.estado==='descartado').length,tern=candidatos.filter(c=>c.estado==='terna'||c.estado==='aprobado').length;
+  document.getElementById('stats-row').innerHTML=`<div class="stat-card s1"><div class="stat-label">Total candidatos</div><div class="stat-value">${tot}</div></div><div class="stat-card s2"><div class="stat-label">En proceso</div><div class="stat-value">${act}</div></div><div class="stat-card s3"><div class="stat-label">En terna</div><div class="stat-value">${tern}</div></div><div class="stat-card s4"><div class="stat-label">Descartados</div><div class="stat-value">${desc}</div></div>`;
+  document.getElementById('top-badge').textContent=tot+' candidatos';
+}
+function renderTable(){
+  const pf=document.getElementById('fp').value,ef=document.getElementById('fe').value,sf=document.getElementById('srch').value.toLowerCase();
+  let list=candidatos;
+  if(pf)list=list.filter(c=>c.puestoId===pf);if(ef)list=list.filter(c=>c.estado===ef);if(sf)list=list.filter(c=>c.nombre.toLowerCase().includes(sf));
+  list=[...list].sort((a,b)=>score(b).pct-score(a).pct);
+  const pn=pid=>puestos.find(x=>x.id===pid)?.nombre||pid;
+  document.getElementById('tbody').innerHTML=list.map(c=>{
+    const {pct,razones}=score(c);const p=puestos.find(x=>x.id===c.puestoId);
+    const autoD=c.estado==='activo'&&pct<(p?p.umbral:55);const est=autoD?'descartado':c.estado;const col=sc(pct);
+    return `<tr class="${selCand===c.id?'sel':''}" onclick="toggleDetail('${c.id}')"><td><span class="cname">${c.nombre}</span>${c.tych?' <span class="pill tych">TYCH</span>':''}</td><td><span class="cpuesto">${pn(c.puestoId)}</span></td><td><div class="score-wrap"><div class="score-track"><div class="score-fill" style="width:${pct}%;background:${col}"></div></div><span class="score-val" style="color:${col}">${pct}%</span></div></td><td style="font-size:12px">${c.pretension}</td><td><span class="pill ${est}">${est}</span></td><td><div class="act-col"><button class="btn sm" onclick="event.stopPropagation();avanzar('${c.id}')" title="Avanzar etapa"><i class="ti ti-arrow-right"></i></button><button class="btn sm danger" onclick="event.stopPropagation();descartar('${c.id}')" title="Descartar"><i class="ti ti-x"></i></button>${est==='psico'?`<button class="btn sm" style="border-color:var(--navy);color:var(--navy)" onclick="event.stopPropagation();openPM('${c.id}')" title="Registrar psicológico"><i class="ti ti-brain"></i></button>`:''}</div></td></tr>`;
+  }).join('');
+}
+function toggleDetail(id){
+  const c=candidatos.find(x=>x.id===id);const panel=document.getElementById('detail-panel');
+  if(selCand===id){selCand=null;panel.classList.remove('open');renderTable();return;}
+  selCand=id;
+  const {pct,razones}=score(c);const p=puestos.find(x=>x.id===c.puestoId);
+  const rows=p?p.skills.map(s=>{const nv=(c.skills[s.n]||'sin dato').toLowerCase();const cls=nv==='avanzado'?'nv-a':nv==='intermedio'?'nv-i':(nv==='básico'||nv==='basico')?'nv-b':'nv-n';return `<div class="skill-row"><span>${s.n}</span><span class="${cls}">${nv}</span></div>`;}).join(''):'';
+  const discHTML=razones.length?`<div class="discard-box"><strong>Bajo mínimo requerido:</strong><br>${razones.join('<br>')}</div>`:'';
+  const psiHTML=c.psico?`<div style="margin-top:12px"><div class="dsec-title">Evaluación psicológica</div><div class="skill-row"><span>Inteligencia</span><span style="font-weight:600">${c.psico.iq}/100</span></div><div class="skill-row"><span>DISC</span><span style="font-weight:600">${c.psico.disc}</span></div><div class="skill-row"><span>IE promedio</span><span style="font-weight:600">${c.psico.ie}/5</span></div></div>`:'';
+  panel.innerHTML=`<div class="detail-grid"><div><div class="dsec-title">Habilidades técnicas</div>${rows}${discHTML}</div><div><div class="dsec-title">Datos de contacto</div><div class="skill-row"><span>Correo</span><span style="font-size:11px">${c.correo}</span></div>${c.wa?`<div class="skill-row"><span>WhatsApp</span><span>${c.wa}</span></div>`:''}<div class="skill-row"><span>Pretensión</span><span>${c.pretension}</span></div><div class="skill-row"><span>TYCH Academy</span><span>${c.tych?'Sí':'No'}</span></div>${psiHTML}</div></div>${c.perfil?`<div style="margin-top:10px;font-size:12px;color:var(--text2);border-top:1px solid var(--border);padding-top:10px">${c.perfil}</div>`:''}`;
+  panel.classList.add('open');renderTable();
+}
+function avanzar(id){const c=candidatos.find(x=>x.id===id);if(!c)return;const flow=['activo','entrevista','psico','terna','aprobado'];const i=flow.indexOf(c.estado);if(i<flow.length-1){c.estado=flow[i+1];selCand=null;document.getElementById('detail-panel').classList.remove('open');renderTable();renderStats();renderPsico();}}
+function descartar(id){const c=candidatos.find(x=>x.id===id);if(c){c.estado='descartado';selCand=null;document.getElementById('detail-panel').classList.remove('open');renderTable();renderStats();renderPsico();}}
+function exportTerna(){const t=candidatos.filter(c=>c.estado==='terna'||c.estado==='aprobado');if(!t.length){alert('No hay candidatos en terna aún.');return;}alert('Terna actual:\n\n'+t.map(c=>`• ${c.nombre} — ${puestos.find(p=>p.id===c.puestoId)?.nombre}`).join('\n'));}
+function renderPsico(){
+  const list=candidatos.filter(c=>['psico','terna','aprobado'].includes(c.estado));
+  document.getElementById('psico-body').innerHTML=list.map(c=>{const p=puestos.find(x=>x.id===c.puestoId);return `<tr><td><span class="cname">${c.nombre}</span></td><td><span class="cpuesto">${p?.nombre||''}</span></td><td><span class="pill ${c.estado}">${c.estado}</span></td><td>${c.psico?c.psico.iq+'/100':'—'}</td><td>${c.psico?c.psico.disc:'—'}</td><td>${c.psico?c.psico.ie+'/5':'—'}</td><td>${c.estado==='psico'?`<button class="btn sm cyan" onclick="openPM('${c.id}')"><i class="ti ti-brain"></i> Registrar</button>`:'<span style="font-size:11px;color:var(--text2)">Completado</span>'}</td></tr>`;}).join('');
+}
+function openPM(id){document.getElementById('pc-id').value=id;document.getElementById('ie-grid').innerHTML=IE_CAMPOS.map(f=>`<div class="ie-field"><label>${f}</label><input type="number" min="1" max="5" data-campo="${f}" placeholder="1–5"></div>`).join('');document.getElementById('modal-psico').classList.add('open');}
+function selDisc(el){document.querySelectorAll('.disc-opt').forEach(d=>d.classList.remove('sel'));el.classList.add('sel');}
+function savePsico(){const id=document.getElementById('pc-id').value;const c=candidatos.find(x=>x.id===id);if(!c)return;const iq=parseInt(document.getElementById('p-iq').value)||0;const disc=document.querySelector('.disc-opt.sel')?.textContent||'Sin registrar';const campos=document.querySelectorAll('[data-campo]');let sum=0,cnt=0;campos.forEach(inp=>{const v=parseInt(inp.value);if(v>=1&&v<=5){sum+=v;cnt++;}});c.psico={iq,disc,ie:cnt>0?(sum/cnt).toFixed(1):0};c.estado='terna';closeMod();renderTable();renderStats();renderPsico();}
+function closeMod(){document.getElementById('modal-psico').classList.remove('open');}
+function renderPuestos(){
+  const sel=document.getElementById('fp');sel.innerHTML='<option value="">Todos los puestos</option>';
+  document.getElementById('pgrid').innerHTML=puestos.map(p=>{const cnt=candidatos.filter(c=>c.puestoId===p.id).length;sel.innerHTML+=`<option value="${p.id}">${p.nombre}</option>`;return `<div class="puesto-card" onclick="showPD('${p.id}')"><h3>${p.nombre}</h3><div class="pm">${p.modalidad} · ${p.tipo}</div><div class="pc">${cnt} candidatos · umbral ${p.umbral}%</div></div>`;}).join('');
+}
+function showPD(id){const p=puestos.find(x=>x.id===id);if(!p)return;const det=document.getElementById('pdet');det.style.display='block';det.innerHTML=`<div style="font-weight:600;font-size:14px;margin-bottom:4px">${p.nombre}</div><div style="font-size:11px;color:var(--text2);margin-bottom:12px">${p.modalidad} · ${p.tipo} · Umbral: ${p.umbral}%</div>${p.skills.map(s=>`<div class="skill-row"><span>${s.n}</span><span style="font-size:11px;color:var(--text2)">peso ${s.p} · mín. ${s.m}</span></div>`).join('')}`;}
+function showNP(){document.getElementById('np-form').style.display='block';document.getElementById('sk-cfg').innerHTML='';addSK();addSK();addSK();}
+function cancelNP(){document.getElementById('np-form').style.display='none';}
+function addSK(){const d=document.createElement('div');d.className='skrow';d.innerHTML=`<input type="text" placeholder="Habilidad (ej: TEKLA)"><select><option>básico</option><option selected>intermedio</option><option>avanzado</option></select><input type="number" class="pw" min="1" max="5" value="2" title="Peso 1–5"><span class="rm-btn" onclick="this.parentElement.remove()">×</span>`;document.getElementById('sk-cfg').appendChild(d);}
+function savePuesto(){const n=document.getElementById('np-n').value.trim();if(!n){alert('Ingresa el nombre del puesto.');return;}const rows=document.querySelectorAll('#sk-cfg .skrow');const skills=[];rows.forEach(r=>{const ins=r.querySelectorAll('input,select');const nm=ins[0].value.trim();if(nm)skills.push({n:nm,m:ins[1].value,p:parseInt(ins[2].value)||2});});puestos.push({id:'p'+Date.now(),nombre:n,modalidad:document.getElementById('np-m').value,tipo:document.getElementById('np-t').value,umbral:parseInt(document.getElementById('np-u').value)||60,skills});cancelNP();renderPuestos();renderStats();}
+function renderFlujo(){
+  const steps=[{a:true,t:'Postulación recibida',d:'Candidato llena Microsoft Forms (forms.cloud.microsoft). Datos ingresan al panel.'},{a:true,t:'Scoring técnico automático',d:'Score calculado por habilidades ponderadas según el puesto. Descartados visibles con criterio registrado.'},{a:true,t:'Correo con formulario específico',d:'Si score ≥ umbral, Power Automate envía el formulario específico del puesto sin intervención.'},{a:false,t:'Entrevista contigo',d:'Decides quién avanza. Score y perfil completo visibles antes de la llamada.'},{a:true,t:'Notificación al psicólogo',d:'Correo automático al psicólogo con nombre, puesto y correo del candidato aprobado.'},{a:false,t:'Evaluación psicológica',d:'Psicólogo realiza sesión y registra resultados en formulario. Panel actualiza automáticamente el perfil.'},{a:false,t:'Entrevista técnica con equipo',d:'Reunión de validación de habilidades en vivo. Equipo conoce el perfil completo previamente.'},{a:true,t:'Terna consolidada para RRHH',d:'Ficha técnica + psicológica generada por puesto. RRHH recibe solo la terna final.'},{a:false,t:'Decisión final RRHH',d:'RRHH aplica sus criterios propios sobre la terna consolidada y emite la decisión.'}];
+  document.getElementById('flujo-wrap').innerHTML=steps.map((s,i)=>`<div class="flujo-item"><div class="fnum ${s.a?'auto':'manual'}">${i+1}</div><div class="fcard ${s.a?'auto':'manual'}"><div class="fcard-top"><span class="fcard-title">${s.t}</span><span class="${s.a?'auto-badge':'manual-badge'}">${s.a?'automático':'manual'}</span></div><div class="fcard-desc">${s.d}</div></div></div>`).join('');
+}
+function renderAutomate(){
+  const flows=[{t:'Flujo 1 — Scoring y envío de formulario específico',trigger:'Microsoft Forms — cuando se envía una respuesta nueva',pasos:['Trigger: "When a new response is submitted" (conector Microsoft Forms) — selecciona el formulario de postulación general','Acción: "Get response details" — extrae todos los campos del candidato','Acción: "Initialize variable" — calcula score: Básico=1, Intermedio=2, Avanzado=3, multiplicado por peso de cada habilidad','Condición: score_calculado >= umbral_del_puesto','Rama SÍ: "Send an email (Outlook)" — correo al candidato con enlace al formulario específico en forms.cloud.microsoft','Rama NO: "Send an email (Outlook)" — correo de agradecimiento cordial sin mencionar el score']},{t:'Flujo 2 — Notificación al psicólogo tras aprobación de entrevista',trigger:'Trigger manual desde Power Apps o botón HTTP',pasos:['Trigger: "Manually trigger a flow" con campos: nombre_candidato, puesto, correo_candidato','Acción: "Send an email (Outlook)" al psicólogo — nombre, puesto y correo del candidato','Acción: "Create event" (Outlook Calendar) — bloque de disponibilidad sugerida en tu agenda','Acción: "Send an email" al candidato — aviso de que será contactado para coordinar la evaluación']},{t:'Flujo 3 — Registro psicológico y generación de terna para RRHH',trigger:'Microsoft Forms — formulario exclusivo del psicólogo (forms.cloud.microsoft)',pasos:['Trigger: "When a new response is submitted" — formulario dedicado al psicólogo','Acción: "Get response details" — extrae IQ, patrón DISC, 15 indicadores IE','Acción: "Update item" en SharePoint List o Excel en OneDrive — actualiza registro del candidato','Condición: candidatos en terna completos para el puesto (≥ 3 con psicológico registrado)','Acción: "Send an email (Outlook)" a RRHH — ficha consolidada técnica + psicológica en formato tabla HTML']}];
+  document.getElementById('pa-steps').innerHTML=flows.map(f=>`<div class="pa-card"><div class="pa-header">${f.t}</div><div class="pa-trigger"><strong>Trigger:</strong> ${f.trigger}</div><div class="pa-body">${f.pasos.map((p,i)=>`<div class="pa-step"><div class="pa-num">${i+1}</div><div>${p}</div></div>`).join('')}</div></div>`).join('');
+}
+function showTab(name,el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');
+  ['candidatos','puestos','psico','flujo','automate'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'block':'none';});
+}
+initC();renderStats();renderPuestos();renderTable();renderFlujo();renderPsico();renderAutomate();
+</script>
+</body>
+</html>
