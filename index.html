@@ -351,7 +351,35 @@ function toggleDetail(id){
   panel.innerHTML=`<div class="detail-grid"><div><div class="dsec-title">Habilidades técnicas</div>${rows}${discHTML}</div><div><div class="dsec-title">Datos de contacto</div><div class="skill-row"><span>Correo</span><span style="font-size:11px">${c.correo}</span></div>${c.wa?`<div class="skill-row"><span>WhatsApp</span><span>${c.wa}</span></div>`:''}<div class="skill-row"><span>Pretensión</span><span>${c.pretension}</span></div><div class="skill-row"><span>TYCH Academy</span><span>${c.tych?'Sí':'No'}</span></div>${psiHTML}</div></div>${c.perfil?`<div style="margin-top:10px;font-size:12px;color:var(--text2);border-top:1px solid var(--border);padding-top:10px">${c.perfil}</div>`:''}`;
   panel.classList.add('open');renderTable();
 }
-function avanzar(id){const c=candidatos.find(x=>x.id===id);if(!c)return;const flow=['activo','entrevista','psico','terna','aprobado'];const i=flow.indexOf(c.estado);if(i<flow.length-1){c.estado=flow[i+1];selCand=null;document.getElementById('detail-panel').classList.remove('open');renderTable();renderStats();renderPsico();}}
+function getPrefillURL(c){
+  const p=puestos.find(x=>x.id===c.puestoId);
+  const base='https://docs.google.com/forms/d/e/1FAIpQLSeewP62HxOdWDR1bpV54YsoKDIdI6cGQwoMRpeokQrNW_sYqg/viewform';
+  const params=new URLSearchParams({
+    'entry.1261614562': c.nombre,
+    'entry.1416351573': c.correo,
+    'entry.1382292877': c.wa||'',
+    'entry.1553639344': p?p.nombre:'',
+  });
+  return base+'?'+params.toString();
+}
+
+function avanzar(id){
+  const c=candidatos.find(x=>x.id===id);if(!c)return;
+  const flow=['activo','entrevista','psico','terna','aprobado'];
+  const i=flow.indexOf(c.estado);
+  if(i<flow.length-1){
+    const nextEstado=flow[i+1];
+    // Si va a pasar a psico, abrir formulario de aprobación prellenado
+    if(nextEstado==='psico'){
+      const url=getPrefillURL(c);
+      window.open(url,'_blank');
+    }
+    c.estado=nextEstado;
+    selCand=null;
+    document.getElementById('detail-panel').classList.remove('open');
+    renderTable();renderStats();renderPsico();
+  }
+}
 function descartar(id){const c=candidatos.find(x=>x.id===id);if(c){c.estado='descartado';selCand=null;document.getElementById('detail-panel').classList.remove('open');renderTable();renderStats();renderPsico();}}
 function exportTerna(){const t=candidatos.filter(c=>c.estado==='terna'||c.estado==='aprobado');if(!t.length){alert('No hay candidatos en terna aún.');return;}alert('Terna actual:\n\n'+t.map(c=>`• ${c.nombre} — ${puestos.find(p=>p.id===c.puestoId)?.nombre}`).join('\n'));}
 function renderPsico(){
